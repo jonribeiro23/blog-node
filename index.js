@@ -1,13 +1,15 @@
 // CARREGANDO MÓDULOS
 const express     = require('express')
-const handlebars  = require('handlebars')
+const handlebars = require('express-handlebars')
 const bodyParser  = require('body-parser')
 const app = express()
+const admin = require('./routes/admin')
+const path = require('path')
 // const mongoose    = require('mongoose')
 
 // CONFIGURAÇÕES
   //bodyParser
-  app.use(bodyParser.urlencoded({extend: true}))
+  app.use(bodyParser.urlencoded({extended: true}))
   app.use(bodyParser.json())
 
   //handlebars
@@ -17,7 +19,12 @@ const app = express()
   //mongoose
     //em breve
 
+  //public
+  app.use(express.static(path.join(__dirname, 'public')))
+
 //ROTAS
+  app.get('/', (req, res) => res.send('Rota principal'))
+  app.use('/admin', admin)
 
 //OUTROS
 const PORT = 8081
