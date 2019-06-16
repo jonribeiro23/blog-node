@@ -5,25 +5,28 @@ const bodyParser  = require('body-parser')
 const app = express()
 const admin = require('./routes/admin')
 const path = require('path')
-// const mongoose    = require('mongoose')
+const mongoose    = require('mongoose')
 
 // CONFIGURAÇÕES
   //bodyParser
-  app.use(bodyParser.urlencoded({extended: true}))
-  app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({extended: true}))
+    app.use(bodyParser.json())
 
   //handlebars
-  app.engine('handlebars', handlebars({defaultLayout: 'main'}))
-  app.set('view engine', 'handlebars')
+    app.engine('handlebars', handlebars({defaultLayout: 'main'}))
+    app.set('view engine', 'handlebars')
 
   //mongoose
-    //em breve
+    mongoose.Promise = global.Promise;
+    mongoose.connect('mongodb://localhost/blogapp')
+    .then(() => console.log('\n\n Successfull connection'))
+    .catch((err) => console.log('\n\n Connection failure: '+err+' \n\n'))
 
   //public
-  app.use(express.static(path.join(__dirname, 'public')))
+    app.use(express.static(path.join(__dirname, 'public')))
 
 //ROTAS
-  app.get('/', (req, res) => res.send('Rota principal'))
+  app.get('/', (req, res) => res.render('home'))
   app.use('/admin', admin)
 
 //OUTROS
