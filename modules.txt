@@ -1,0 +1,7 @@
+-- Nodemon
+-- Express
+-- express-handlebars
+-- body-parser
+-- mongoose
+-- express-session
+-- connect flash
