@@ -19,8 +19,10 @@ router.get('/categorias', (req, res) => {
   })
 })
 
+//Pagina que adiciona categoria
 router.get('/categorias/add', (req, res) => res.render('admin/add-categorias'))
 
+//Salva categoria
 router.post('/categorias/nova', (req, res) => {
   var err = []
 
@@ -55,6 +57,7 @@ router.post('/categorias/nova', (req, res) => {
   }
 })
 
+//Pagina de edição de categoria
 router.get('/categorias/edit/:id', (req, res) => {
   Categoria.findById(req.params.id)
   .then((cate) => {
@@ -66,6 +69,7 @@ router.get('/categorias/edit/:id', (req, res) => {
   })
 })
 
+//Salva a edição de categoria
 router.post('/categorias/edit/salvar', (req, res) => {
   var err = []
 
@@ -100,6 +104,31 @@ router.post('/categorias/edit/salvar', (req, res) => {
       res.redirect('/admin/categorias')
     })
   }
+})
+
+//Página que deleta uma categoria
+router.get('/categorias/delete/:id', (req, res) => {
+  Categoria.findById(req.params.id)
+  .then((cate) => {
+    res.render('admin/delete-categorias', {cate: cate})
+  })
+  .catch((err) => {
+    req.flash('error_msg','Categoria não encotrada!')
+    res.redirect('/admin/categorias')
+  })
+})
+
+//Deleta uma categoria
+router.get('/categorias/deletar/:id', (req, res) => {
+  Categoria.deleteOne({_id: req.params.id}, (err) => {
+    if (err) {
+      req.flash('error_msg','Erro ao deletar'+err)
+      res.redirect('/admin/categorias')
+    }
+  }).then(() => {
+    req.flash('success_msg','Categoria deletada com sucesso')
+    res.redirect('/admin/categorias')
+  })
 })
 
 module.exports = router
