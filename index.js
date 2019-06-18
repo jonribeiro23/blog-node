@@ -12,11 +12,12 @@ const flash       = require('connect-flash')
 // CONFIGURAÇÕES
 
   //session
-    app.use(() => {
-      secret: 'cursodenode',
-      resave: 'true',
-      seveUnitialized: true
-    })
+    app.set('trust proxy', 1)
+    app.use(session({
+      secret: 'savior',
+      resave: false,
+      saveUninitialized: true
+    }))
 
     app.use(flash())
 
@@ -37,7 +38,7 @@ const flash       = require('connect-flash')
 
   //mongoose
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/blogapp')
+    mongoose.connect('mongodb://localhost/blogapp', {useNewUrlParser: true})
     .then(() => console.log('\n\n Successfull connection'))
     .catch((err) => console.log('\n\n Connection failure: '+err+' \n\n'))
 

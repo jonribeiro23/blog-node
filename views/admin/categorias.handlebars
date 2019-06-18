@@ -1,3 +1,16 @@
 <h2>Categorias</h2>
 <hr>
 <a href="/admin/categorias/add"><button type="button" name="button" class="btn btn-info">Nova Categoria</button></a>
+<div class="row">
+  <div class="col">
+    {{#each categorias}}
+      <div class="card my-2">
+        <div class="card-body">
+          <h4>{{nome}}</h4> - <small>{{date}}</small>
+          <p>{{slug}}</p>
+        </div>
+      </div>
+      {{else}}
+    {{/each}}
+  </div>
+</div>
