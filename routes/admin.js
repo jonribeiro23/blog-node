@@ -55,4 +55,51 @@ router.post('/categorias/nova', (req, res) => {
   }
 })
 
+router.get('/categorias/edit/:id', (req, res) => {
+  Categoria.findById(req.params.id)
+  .then((cate) => {
+    res.render('admin/edit-categorias', {cate: cate})
+  })
+  .catch((err) => {
+    req.flash('error_msg','Categoria não encotrada!')
+    res.redirect('/admin/categorias')
+  })
+})
+
+router.post('/categorias/edit/salvar', (req, res) => {
+  var err = []
+
+  if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
+    err.push({text: "Nome inválido"})
+  }
+
+  if(req.body.nome.length < 2){
+    err.push({text: "O nome é muito curto"})
+  }
+
+  if(!req.body.slug || typeof req.body.slug == undefined || req.body.nome == null){
+    err.push({text: "Slug inválido"})
+  }
+
+  if(err.length > 0){
+    console.log(err)
+    res.render('admin/edit-categorias', {erros: err})
+  }else {
+    // let dados = Categoria.findById(req.body._id)
+    // console.log(dados.schema.obj.nome)
+    Categoria.updateOne({_id: req.body.id}, {
+      $set: {
+        nome: req.body.nome,
+        slug: req.body.slug
+      }
+    }).then(() =>{
+      req.flash('success_msg', 'Categoria atualizada com sucesso!')
+      res.redirect('/admin/categorias')
+    }).catch((err) => {
+      req.flash('error_msg', 'Erro ao atualizar!'+err)
+      res.redirect('/admin/categorias')
+    })
+  }
+})
+
 module.exports = router

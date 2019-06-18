@@ -1,0 +1,12 @@
+// Categoria.findById(req.body._id)
+// .then((categoria) => {
+//     console.log(req.body.nome)
+//     console.log(req.body.slug)
+//     categoria.nome = req.body.nome,
+//     categoria.slug = req.body.slug
+//     categoria.save().then(() => {
+//       req.flash('success_msg', 'Categoria atualizada com sucesso!')
+//       res.redirect('/admin/categorias')
+//     }).catch((err) => console.log(err))
+//
+// })
