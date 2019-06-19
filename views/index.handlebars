@@ -1,0 +1,32 @@
+<div class="jumbotron mt-5">
+  <hr class="mt-3">
+  <h1 class="display-4">Aprendendo NodeJS</h1>
+  <p class="lead">Node.Js é uma framework que nos permite programar em javascript
+    do lado do servidor. Este bot poderia ter sido criado com qualquer outra framework,
+    mas decidi escolher esta primeiro porque é uma das minhas preferidas, depois
+    porque é bastante modular e tem um repositório opensource com muitos recursos
+    gratuitos que podemos utilizar e facilitar o desenvolvimento de qualquer aplicação.
+  </p>
+  <hr class="mt-3">
+</div>
+
+<h2 class="mt-5">Postagens</h2>
+<hr>
+<div class="row">
+  <div class="col">
+    {{#each post}}
+      <div class="card my-2">
+        <div class="card-body">
+          <h3>{{titulo}}</h3>
+          <h5>{{descricao}}</h5>
+          <a href="/leiamais/{{slug}}"><button class="my-3 btn btn-outline-info">Leia mais</button></a>
+          <hr>
+          <small><strong>Categoria: </strong>{{categoria.nome}}</small>
+          <small>{{data}}</small>
+        </div>
+      </div>
+      {{else}}
+        <h4 class="my-5">Não Há postagens registradas</h4>
+    {{/each}}
+  </div>
+</div>

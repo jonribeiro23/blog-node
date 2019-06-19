@@ -8,6 +8,10 @@ const path        = require('path')
 const mongoose    = require('mongoose')
 const session     = require('express-session')
 const flash       = require('connect-flash')
+require('./models/Postagem')
+require('./models/Categoria')
+const Postagem    = mongoose.model('postagens')
+const Categoria   = mongoose.model('categorias')
 
 // CONFIGURAÇÕES
 
@@ -51,7 +55,38 @@ const flash       = require('connect-flash')
     // })
 
 //ROTAS
-  app.get('/', (req, res) => res.render('home'))
+//Home
+  app.get('/', (req, res) => {
+    Postagem.find().populate('categoria').sort({data: 'desc'})
+    .then((post) => res.render('index', {post: post}))
+    .catch((err) => {
+      req.flash('error_msg', 'Erro ao carregar categoria: '+err)
+      res.redirect('/404')
+    })
+  })
+
+//Leia mais
+  app.get('/leiamais/:slug', (req, res) => {
+    Postagem.findOne({slug: req.params.slug}).then((post) => {
+      if (post) {
+          res.render('leia-mais', {post: post})
+      }else{
+        req.flash('error_msg', 'Postagem não encontrada :´(')
+        res.redirect('/404')
+      }
+    })
+    .catch((err) => {
+      req.flash('error_msg', 'Postagem não encontrada: '+err)
+      res.redirect('/404')
+    })
+  })
+
+
+
+//404
+  app.get('/404', (req, res) => res.render('erro-404'))
+
+//Admin
   app.use('/admin', admin)
 
 //OUTROS
