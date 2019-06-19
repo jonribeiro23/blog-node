@@ -138,13 +138,23 @@ router.get('/categorias/deletar/:id', (req, res) => {
 
 //Lista postagens
 router.get('/postagens', (req, res) => {
-  Postagem.find().sort({data: 'desc'})
+  // Postagem.find().sort({data: 'desc'})
+  // .then((postagens) => {
+  //   res.render('admin/postagens/postagens', {post: postagens})
+  // })
+  // .catch((err) => {
+  //   req.flash('error_msg', 'Erro ao listar postagens!')
+  //   res.render('admin/postagens/postagens')
+  // })
+
+  //Utilizando o a função Populate
+  Postagem.find().populate('categoria').sort({data: 'desc'})
   .then((postagens) => {
     res.render('admin/postagens/postagens', {post: postagens})
   })
   .catch((err) => {
     req.flash('error_msg', 'Erro ao listar postagens!')
-    res.render('admin/postagens/postagens')
+    res.redirect('/admin')
   })
 })
 
