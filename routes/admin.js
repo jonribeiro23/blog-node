@@ -3,10 +3,13 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require ('../models/Categoria')
 const Categoria = mongoose.model('categorias')
+require('../models/Postagem')
+const Postagem = mongoose.model('postagens')
 
+//==================== CATEGORIAS ====================
 router.get('/', (req, res) => res.render('admin/index'))
 
-router.get('/posts', (req, res) => res.send('<button class="btn btn-danger">página de posts</button>'))
+// router.get('/posts', (req, res) => res.send('<button class="btn btn-danger">página de posts</button>'))
 
 router.get('/categorias', (req, res) => {
   Categoria.find().sort({date: 'desc'})
@@ -130,5 +133,131 @@ router.get('/categorias/deletar/:id', (req, res) => {
     res.redirect('/admin/categorias')
   })
 })
+
+//==================== POSTAGENS ====================
+
+//Lista postagens
+router.get('/postagens', (req, res) => {
+  Postagem.find().sort({data: 'desc'})
+  .then((postagens) => {
+    res.render('admin/postagens/postagens', {post: postagens})
+  })
+  .catch((err) => {
+    req.flash('error_msg', 'Erro ao listar postagens!')
+    res.render('admin/postagens/postagens')
+  })
+})
+
+//Adiciona postagens
+router.get('/postagens/add', (req, res) => {
+  Categoria.find()
+  .then((categorias) => {
+      res.render('admin/postagens/add-postagem', {cate: categorias})
+  })
+  .catch((err) => {
+    req.flash('error_msg', 'Erro ao carregar o formulário'+err)
+    res.redirect('/admin')
+  })
+
+})
+
+//Salva postagens
+router.post('/postagens/salvar', (req, res) => {
+  let erros = []
+  if (req.body.categoria == 0) {
+    erros.push({text: 'Você precisa registrar uma categoria antes de postar'})
+  }
+  if (erros.length > 0) {
+    res.render('admin/postagens/add-postagem')
+  }else{
+    const novaPostagem = {
+      titulo: req.body.titulo,
+      slug: req.body.slug,
+      descricao: req.body.descricao,
+      conteudo: req.body.conteudo,
+      categoria: req.body.categoria
+    }
+
+    new Postagem(novaPostagem).save()
+    .then(() => {
+      req.flash('success_msg', 'Postagem criada com sucesso')
+      res.redirect('/admin/postagens')
+    })
+    .catch((err) => {
+      req.flash('error_msg', 'Falha ao criar postagem. Tente mais tarde')
+      res.redirect('/admin/postagens')
+    })
+  }
+})
+
+//pagina de editar Postagem
+router.get('/postagens/editar/:id', (req, res) => {
+  let cate = []
+  Categoria.find()
+  .then((dados) => cate = dados)
+
+  Postagem.findById(req.params.id)
+  .then((post) => {
+    res.render('admin/postagens/edit-postagem', {post: post, cate: cate})
+  })
+  .catch((err) => {
+    req.flash('error_msg', 'Postagem não encontrada')
+    res.redirect('admin/postagens')
+  })
+})
+
+//Salvar edição
+router.post('/postagens/editar/salvar/:id', (req, res) => {
+  let erros = []
+  if (req.body.categoria == 0) {
+    erros.push({text: 'Você precisa registrar uma categoria antes de postar'})
+  }
+  if (erros.length > 0) {
+    res.render('admin/postagens/add-postagem')
+  }else{
+    Postagem.updateOne({_id: req.params.id}, {
+      titulo: req.body.titulo,
+      slug: req.body.slug,
+      descricao: req.body.descricao,
+      conteudo: req.body.conteudo,
+      categoria: req.body.categoria
+    })
+    .then(() => {
+      req.flash('success_msg', 'Postagem atualizada com sucesso!')
+      res.redirect('/admin/postagens')
+    })
+    .catch((err) => {
+      req.flash('success_msg', 'Postagem atualizada com sucesso!')
+      res.redirect('/admin/postagens')
+    })
+  }
+})
+
+//Pagina de deletar Postagem
+router.get('/postagens/delete/:id', (req, res) => {
+  Postagem.findById(req.params.id)
+  .then((post) => {
+    console.log(post)
+    res.render('admin/postagens/delete-postagem', {post: post})
+  })
+  .catch((err) => {
+    req.flash('error_msg', 'Postagem não encontrada')
+    res.redirect('admin/postagens')
+  })
+})
+
+//Deleta Postagem
+router.get('/postagens/deletar/:id', (req, res) => {
+  Postagem.deleteOne({_id: req.params.id}, (err) => {
+    if (err) {
+      req.flash('error_msg','Erro ao deletar'+err)
+      res.redirect('/admin/categorias')
+    }
+  }).then(() => {
+    req.flash('success_msg', 'Postagem deletada com sucesso')
+    res.redirect('/admin/postagens')
+  })
+})
+
 
 module.exports = router

@@ -1,0 +1,34 @@
+<h2 class="mt-4">Nova Postagem</h2>
+{{#each erros}}
+  <div class="mt-5 alert alert-danger">
+    {{text}}
+  </div>
+{{/each}}
+<div class="card my-4">
+  <div class="card-body" style="padding-left: 10em;padding-right: 10em;">
+    <form class="form" action="/admin/postagens/editar/salvar/{{post._id}}" method="post">
+      <label for="titulo">Titulo</label>
+      <input class="form-control" type="text" name="titulo" id="titulo" value="{{post.titulo}}">
+
+      <label for="slug">Slug</label>
+      <input class="form-control" type="text" name="slug" id="slug" value="{{post.slug}}">
+
+      <label for="descricao">Descrição</label>
+      <input class="form-control" type="text" name="descricao" id="descricao" value="{{post.descricao}}">
+
+      <label for="categoria">Categoria</label>
+      <select class="form-control" name="categoria">
+        {{#each cate}}
+        <option value="{{_id}}">{{nome}}</option>
+        {{else}}
+        <option value="0">Não há categorias registradas</option>
+        {{/each}}
+      </select>
+
+      <label for="conteudo">Conteúdo</label>
+      <textarea class="form-control" name="conteudo" id="conteudo">{{post.conteudo}}</textarea>
+
+      <button class="btn btn-primary my-3">Publicar</button>
+    </form>
+  </div>
+</div>
