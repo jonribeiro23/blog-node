@@ -1,0 +1,20 @@
+<h2 class="mt-5">Postagens de {{categoria.nome}}</h2>
+<hr>
+<div class="row">
+  <div class="col">
+    {{#each postagens}}
+      <div class="card my-2">
+        <div class="card-body">
+          <h3>{{titulo}}</h3>
+          <h5>{{descricao}}</h5>
+          <a href="/leiamais/{{slug}}"><button class="my-3 btn btn-outline-info">Leia mais</button></a>
+          <hr>
+          <small><strong>Categoria: </strong>{{categoria.nome}}</small>
+          <small>{{data}}</small>
+        </div>
+      </div>
+      {{else}}
+        <h4 class="my-5">Não Há postagens registradas</h4>
+    {{/each}}
+  </div>
+</div>

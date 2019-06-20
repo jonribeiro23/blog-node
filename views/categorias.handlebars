@@ -1,0 +1,16 @@
+<h2 class="mt-5 mb-4">Categorias</h2>
+<div class="row">
+  {{#each categorias}}
+  <div class="col-4 my-2">
+    <div class="card" align='center'>
+      <div class="card-body">
+        <h4>{{nome}}</h4>
+        <a href="categorias/{{slug}}"><button class="my-3 btn btn-outline-dark">Acessar</button></a>
+      </div>
+    </div>
+  </div>
+  {{else}}
+    <h2 class="mt-5 mb-4">Não há categorias registradas</h2>
+  {{/each}}
+
+</div>

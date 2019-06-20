@@ -4,6 +4,7 @@ const handlebars  = require('express-handlebars')
 const bodyParser  = require('body-parser')
 const app         = express()
 const admin       = require('./routes/admin')
+const usuarios    = require('./routes/usuario')
 const path        = require('path')
 const mongoose    = require('mongoose')
 const session     = require('express-session')
@@ -81,6 +82,34 @@ const Categoria   = mongoose.model('categorias')
     })
   })
 
+  //Categorias
+  app.get('/categorias', (req, res) => {
+    Categoria.find()
+    .then((cats) => res.render('categorias', {categorias: cats}))
+    .catch((err) => {
+      req.flash('error_msg', 'Categoria não encontrada: '+err)
+      res.redirect('/404')
+    })
+  })
+
+  app.get('/categorias/:slug', (req, res) => {
+    Categoria.findOne({slug: req.params.slug})
+    .then((cat) => {
+      Postagem.find({categoria: cat._id})
+      .then((posts) => {
+        console.log(cat._id)
+        res.render('categorias-individuais', {postagens: posts, categoria: cat})
+      })
+      .catch((err) => {
+        req.flash('error_msg', 'Postagens não encontradas para essa categoria :´( ')
+        res.redirect('/404')
+      })
+    })
+    .catch((err) =>{
+      req.flash('error_msg', 'Categoria não encontrada: '+err)
+      res.redirect('/404')
+    })
+  })
 
 
 //404
@@ -88,6 +117,7 @@ const Categoria   = mongoose.model('categorias')
 
 //Admin
   app.use('/admin', admin)
+  app.use('/usuarios', usuarios)
 
 //OUTROS
 const PORT = 8081
